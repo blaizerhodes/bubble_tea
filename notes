@@ -1,0 +1,53 @@
+
+Requirements:
+
+  The web site needs 
+
+   * python 2.7 from here https://www.python.org/download/releases/2.7.7/
+
+   * google app engine (if you want to run the devserver) 
+     get it here here https://cloud.google.com/appengine/downloads
+
+  The desktop client needs python and wxpython
+
+   * You can get wxpython here.
+     http://www.wxpython.org/download.php
+
+
+
+Web Site Notes: 
+
+  To run the test server..
+   ./google_appengine/dev_appserver.py bobble-tea
+
+  Management console is on:
+    localhost:8000/
+
+  Website is on (the db is empty to start with):
+    localhost:8080/ 
+  
+  To populate the db with some data go to:  
+    localhost:8080/reset
+
+  Can login as one of three users: 
+    scott, blaize, phil passwords are the usernames respectively
+
+  Data is stored in ndb, c.f. (mocked for the dev server)
+    https://cloud.google.com/appengine/docs/python/ndb/
+
+  It's running on the web here:
+     http://bubble-tea.appspot.com/
+  or test for mobile phones here: (It needs layout work .. I'm way out of time).
+     http://mobiletest.me/iphone_5_emulator/#u=http://bubble-tea.appspot.com/
+
+
+
+Desktop Client Notes: 
+
+  cd to bubble_tea_admin directory
+  run python main.py
+
+  By default it's hooked up to edit the http://bubble-tea.appspot.com/ website.
+  If you want to play with the dev webserver locally you can change the URL 
+  it looks at near the top of bubble_tea_admin/model/utils.py 
+

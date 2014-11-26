@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <title>Login Form</title>
+        <script src="static/angular.js"></script>
+        <script src="static/control.js"></script>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    </head>
+
+    <body ng-controller="loginController">
+        <section class="container">
+            <div class="login">
+                <h1>Login to Bubble Tea Bonanza</h1>
+                <p>
+                    <input 
+                         type="text" 
+                         name="login" 
+                         value="" 
+                         ng-model="username" 
+                         placeholder="Username">
+                </p>
+                <p>
+                    <input 
+                         type="password" 
+                         name="password" 
+                         value="" 
+                         ng-model="password" 
+                         placeholder="Password"></p>
+
+                <button class="btn" ng-click="do_login(username, password)">
+                    Login
+                </button>
+            </div>      
+        </section>
+    </body>
+</html>
+
+

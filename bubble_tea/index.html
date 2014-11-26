@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html ng-app>
+    <head>
+        <title>Bubble Tea Bonanza</title>
+        <script src="static/angular.js"></script>
+        <script src="static/control.js"></script>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body ng-controller="orderController">        
+        <div class="container">
+            
+            <!-- header row -->
+            <div class="row">
+                <div class="col-xs-9">
+                    <h1>
+                        <img src="static/tea.png" 
+                             style="width:2em;position:relative;top:-0.3em;">
+                        Bubble Tea Bonanza
+                    </h1>
+                </div>
+                
+                <!-- login -->
+                <div ng-controller="orderController" class"col-xs-3">
+                    <span ng-if="!is_logged_in()">
+                        <button ng-click="go_to_login()" class="btn">
+                            login</button>
+                    </span>
+                    <span ng-if="is_logged_in()">
+                        <button ng-click="do_logout()" class="btn">
+                            logout {{ get_username() }}</button>
+                    </span>
+                </div>
+            </div>
+
+            <!-- no js warning -->
+            <noscript>
+                <h3>Please enable JavaScript to use this page!</h3>
+            </noscript>
+
+
+            <!-- type, flavour, toppings -->
+            <div class="row">                                
+                <div ng-controller="teaTypeController" class="col-xs-4"> 
+                    <h3>Tea</h3>
+                    <select 
+                         ng-model="currentTeaOrder.teaType" 
+                         ng-options="opt as opt.verbose_name for opt in tea_types"
+                         ng-change="updateSelectedTeaType(currentTeaOrder.teaType)"
+                         >
+                    </select>
+                </div>
+                
+                <div ng-controller="teaFlavourController" class="col-xs-4">
+                    <h3>Flavour</h3>
+                    <select 
+                         ng-model="currentTeaOrder.teaFlavour"
+                         ng-options="opt as opt.verbose_name for opt in flavours"
+                         ng-change="updateSelectedTeaFlavour(currentTeaOrder.teaFlavour)"
+                         >
+                    </select>
+                </div>
+                
+                <div ng-controller="orderController" class="col-xs-4">
+                    <h3>Toppings</h3>
+                    <div class="checkbox">
+                        <label 
+                             ng-repeat="topping in currentTeaOrder.teaToppings" 
+                             class="checkbox">
+                            <input
+                                 type="checkbox"
+                                 ng-model="topping.checked"
+                                 xxng-model="checked[]"
+                                 ng-change="updateSelectedToppings(topping)"
+                                 value="{{ topping.name }}"
+                                 >{{topping.verbose_name}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+                
+            <!-- size and order another button -->
+            <div class="row">                                
+                <div style="background-color: grey;">                    
+                    <div ng-controller="teaSizeController" class="col-xs-4">
+                        <h3>Size</h3>
+                        <label ng-repeat="teaSize in teaSizes" class="radio">
+                            <input
+                                 type="radio"
+                                 ng-checked="teaSize === currentTeaOrder.teaSize"
+                                 ng-click="updateSelectedTeaSize(teaSize)"
+                                 >
+                            {{ teaSize.verbose_name }}
+                        </label>
+                    </div>
+                    
+                    <div ng-controller="orderController" class="col-xs-4">
+                        <h3>
+                            Tea Price: {{ currentTeaOrder.teaPrice / 100 | currency }}
+                        </h3>
+                        <!-- 
+                             DEBUGGING .. dump constituent prices to check the sanity
+                             <br>Type: {{ currentTeaOrder.teaType.cost / 100 | currency }}
+                             <br>Flavour: 
+                             {{ currentTeaOrder.teaFlavour.additional_cost / 100 | currency }}
+                             <br>Size: 
+                             {{ currentTeaOrder.teaSize.additional_cost / 100 | currency }}
+                             <br>Toppings: {{ currentTeaOrder.teaToppings  }}
+                             -->
+                    </div>
+                    
+                    <div class="col-xs-4">
+                        <h3>
+                            <button 
+                                 type="button"
+                                 ng-click="orderAnotherTea()"
+                                 class="btn glyphicon glyphicon-plus"
+                                 > More Tea!</button></h3>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- table containing all the current orders.. -->
+            <div ng-controller="orderController" class="row">
+
+                <h3>Orders</h3>
+
+                <table class="table table-striped">
+                    <tr>
+                        <th>Type</th>
+                        <th>Flavour</th>
+                        <th>Toppings</th>
+                        <th>Size</th>
+                        <th>Price</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="teaOrder in teaOrders">
+                        <td>{{ teaOrder.teaType.verbose_name }}</td>
+                        <td>{{ teaOrder.teaFlavour.verbose_name }}</td>
+                        <td>
+                            <span ng-repeat="topping in teaOrder.teaToppings | filter:!topping.checked">
+                                {{ topping.verbose_name }}
+                            </span>
+                        </td>
+                        <td>{{ teaOrder.teaSize.verbose_name }}</td>
+                        <td>{{ teaOrder.teaPrice / 100 | currency }}</td>
+                        <td>
+                            <button 
+                                 type="button" 
+                                 ng-click="editTeaOrder(teaOrder)"
+                                 ng-hide="teaOrder == currentTeaOrder"
+                                 class="btn"
+                                 >
+                                Edit
+                            </button>
+
+                            <span ng-hide="teaOrder !== currentTeaOrder"
+                                  class="glyphicon glyphicon-asterisk"></span>
+                        </td>
+                        <td>
+                            <button 
+                                 type="button" 
+                                 ng-click="deleteTeaOrder(teaOrder)"
+                                 ng-hide="teaOrder == currentTeaOrder"
+                                 class="btn"
+                                 >
+                                Delete!
+                            </button>
+                        </td>
+                    </tr>
+                </table>                 
+            </div>
+            
+            <!-- Total Price and Place Order button. -->
+            <div class="row">                                
+                <div class="col-xs-6">
+                    <h3>Total {{ totalPrice / 100 | currency }}</h3>
+                </div>
+                
+                <div class="col-xs-6">
+                    <button 
+                         type="button" 
+                         ng-click="placeOrder()"
+                         class="btn"
+                         ><h3>Place Order!</h3></button>
+                </div>
+            </div>
+            
+
+        </div> <!-- /container -->
+    </body>
+</html>
+
+
+
